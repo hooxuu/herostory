@@ -5,8 +5,11 @@ import cc.xuhao.herostory.async.AsyncOperationProcessor;
 import cc.xuhao.herostory.async.IAsyncOperation;
 import cc.xuhao.herostory.login.db.IUserDao;
 import cc.xuhao.herostory.login.db.UserDO;
+import cc.xuhao.herostory.util.RedisUtil;
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
+import redis.clients.jedis.Jedis;
 
 import java.util.function.Function;
 
@@ -96,8 +99,21 @@ class AsyncDoLoginOperation implements IAsyncOperation {
             }
 
             _user = user;
+            updateUserInfoInRedis(_user);
         } catch (Exception e) {
             log.error("do async error", e);
+        }
+    }
+
+    private void updateUserInfoInRedis(UserDO userDO) {
+        if (null == userDO) {
+            return;
+        }
+
+        try (Jedis jedis = RedisUtil.getJedis()) {
+            jedis.hset("User_" + userDO.userId, "BasicInfo", JSON.toJSONString(userDO));
+        } catch (Exception e) {
+            log.error("update user info to redis error", e);
         }
     }
 }

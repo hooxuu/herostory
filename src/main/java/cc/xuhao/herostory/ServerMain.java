@@ -3,6 +3,9 @@ package cc.xuhao.herostory;
 import cc.xuhao.herostory.codec.GameMsgDecoder;
 import cc.xuhao.herostory.codec.GameMsgEncoder;
 import cc.xuhao.herostory.handler.CmdHandlerFactory;
+import cc.xuhao.herostory.mq.MQConsumer;
+import cc.xuhao.herostory.mq.MQProducer;
+import cc.xuhao.herostory.util.RedisUtil;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -55,6 +58,8 @@ public class ServerMain {
                 CmdHandlerFactory.init();
                 GameMsgRecognizer.init();
                 DBSessionFactory.init();
+                RedisUtil.init();
+                MQProducer.init();
                 LOGGER.info("server started at port {}", 12345);
             }
 

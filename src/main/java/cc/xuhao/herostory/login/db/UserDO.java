@@ -1,5 +1,6 @@
 package cc.xuhao.herostory.login.db;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 /**
@@ -14,6 +15,7 @@ public class UserDO {
 
     public String userName;
 
+    @JSONField(serialize = false, deserialize = false)
     public String password;
 
     public String heroAvatar;

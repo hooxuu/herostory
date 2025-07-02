@@ -7,7 +7,9 @@ package cc.xuhao.herostory.async;
  */
 public interface IAsyncOperation {
 
-    int bindId();
+    default int bindId() {
+        return 0;
+    }
 
 
     void doAsync();

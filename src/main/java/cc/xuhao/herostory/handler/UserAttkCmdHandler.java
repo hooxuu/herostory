@@ -3,6 +3,9 @@ package cc.xuhao.herostory.handler;
 import cc.xuhao.herostory.BoardCaster;
 import cc.xuhao.herostory.entity.User;
 import cc.xuhao.herostory.entity.UserManger;
+import cc.xuhao.herostory.mq.MQConstants;
+import cc.xuhao.herostory.mq.MQProducer;
+import cc.xuhao.herostory.mq.VictorMsg;
 import cc.xuhao.herostory.msg.GameMsgProtocol;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
@@ -39,6 +42,12 @@ public class UserAttkCmdHandler implements ICmdHandler<GameMsgProtocol.UserAttkC
         // 检查是否死亡
         if (targetUser.hp <= 0) {
             boardCastDie(targetUserId);
+
+            // 给消息队列写攻击结算消息
+            VictorMsg msg = new VictorMsg();
+            msg.winId = attacker;
+            msg.loseId = targetUserId;
+            MQProducer.sendMsg(MQConstants.TOPIC, msg);
         }
     }
 
